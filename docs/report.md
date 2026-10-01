@@ -50,6 +50,7 @@ erDiagram
     string title
     string location
     string description
+    string image_url
     decimal price_per_night
     int bedrooms
     int bathrooms
@@ -68,9 +69,17 @@ erDiagram
   }
 ```
 
+`check_in` and `check_out` are the booking date fields. The booking service rejects
+check-in dates before today, requires check-out to be after check-in, and rejects
+date ranges that overlap an existing booking for the same property. Back-to-back
+stays are allowed when one booking checks out on the date the next checks in.
+
 ## Wireframes
 
-The updated combined wireframe labels the two parts of each named workflow, includes the spelling correction, and shows login as the shared entry point before protected workflows. The same image covers search/browse listings, listing a property, and booking a listing.
+One combined wireframe image is present in the workspace. It shows login as the
+shared entry point and covers search/browse listings, listing a property, and
+booking a listing. The workspace does not contain three separate wireframe
+images; add those files if separate images are required for submission.
 
 ### Student Accommodation Wireframe
 
@@ -112,17 +121,15 @@ Implemented the Phase 5 accommodation app as a layered FastAPI build:
 
 - Login/Authentication: `/login` authenticates users and directs tenants to `/app` and landlords to `/admin`; `/register` creates accounts.
 - Search/Browse Listings: the tenant dashboard at `/app` filters listings by location and max nightly price and displays listing cards for browsing.
-- View Listing Details: listing cards open `/properties/{property_id}`, where tenants can review realistic studio listings around UWI-area streets and finalise a stay before booking. Demo apartments are focused around UWI St. Augustine and nearby residential streets such as Watts, Evans, Rapsey, Lyndon, Old Tim, and Carmody Road.
+- View Listing Details: listing cards open `/properties/{property_id}`, where tenants can review listing details before booking. The six seeded studio listings use UWI-area streets in St. Augustine: Watts, Evans, Rapsey, Lyndon, Carmody, and Old Tim. Seeded nightly rates range from TT$420 to TT$490.
 - List a Property: the landlord dashboard at `/admin` and the `/properties/new` form support property creation; both creation routes require the landlord/admin dependency and use a service/repository layer rather than route-level SQL.
-- Book a Listing: the detail page includes a booking form that calculates the nightly total and submits a booking record through the booking service layer. Booking validation rejects past dates, invalid checkout dates, and any overlapping stay for the same property.
+- Book a Listing: the detail page accepts check-in and check-out dates, calculates the total using the nightly rate, and submits a booking through the service layer. The service rejects past check-in dates, checkout dates that are not after check-in, and overlapping bookings for the same property.
 
-The app was verified with the seeded users `bob / bobpass`, `alice / alicepass`, and `admin / adminpass`, and the property listing, booking validation, and booking submission flow were exercised successfully against the live server.
+The seeded test accounts are `bob / bobpass`, `alice / alicepass` on a new database, and `admin / adminpass`. A local browser check confirmed that tenant login redirects to `/app` and the listing page renders. The report does not record an end-to-end verification of the booking submission flow.
 
 ## Deployed app
 
-Phase 6 is not yet deployed in this workspace. A public Render URL will be added after the final deployment step is completed.
-
-https://
+Phase 6 deployment is not complete. No public Render URL is available yet.
 
 ## Logins
 

@@ -28,7 +28,7 @@
           <p class="listing-location">{{ property.location }}</p>
           <p>{{ property.description }}</p>
           <div class="listing-footer">
-            <strong>TT$ {{ '%.2f' % property.price_per_night }} / night</strong>
+            <strong>TT$ {{ '%.2f' % property.price_per_night }}</strong>
             <a href="{{ url_for('property_detail_view', property_id=property.id) }}" class="btn btn-outline-primary btn-soft">Open</a>
           </div>
         </div>

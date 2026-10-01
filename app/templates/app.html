@@ -47,7 +47,7 @@
           <p class="listing-location">{{ listing.location }}</p>
           <p>{{ listing.description[:120] }}{% if listing.description|length > 120 %}...{% endif %}</p>
           <div class="listing-footer">
-            <strong>TT$ {{ '%.2f' % listing.price_per_night }} / night</strong>
+            <strong>TT$ {{ '%.2f' % listing.price_per_night }}</strong>
             <a href="{{ url_for('property_detail_view', property_id=listing.id) }}" class="btn btn-outline-primary btn-soft">View</a>
           </div>
         </div>
