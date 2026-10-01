@@ -1,0 +1,29 @@
+{
+  "system": "Student Accommodation",
+  "actors": [
+    {"name": "Tenant", "side": "left"},
+    {"name": "Landlord", "side": "right"}
+  ],
+  "use_cases": [
+    {
+      "name": "Search/Browse Listings",
+      "actors": ["Tenant"]
+    },
+    {
+      "name": "View Listing Details"
+    },
+    {
+      "name": "Book a Listing",
+      "actors": ["Tenant"],
+      "includes": ["View Listing Details"]
+    },
+    {
+      "name": "List a Property",
+      "actors": ["Landlord"]
+    },
+    {
+      "name": "Login/Authentication",
+      "actors": ["Tenant", "Landlord"]
+    }
+  ]
+}

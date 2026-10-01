@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 56" role="img" aria-labelledby="title">
+  <title id="title">CampusStay</title>
+  <g fill="none" stroke="#242424" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+    <path d="M5 23 27 7l22 16v25H5z" />
+    <path d="M14 48V29h26v19M22 29v8m10-8v8M25 48V38h8v10" />
+  </g>
+  <text x="62" y="39" fill="#242424" font-family="Source Sans 3, Segoe UI, Arial, sans-serif" font-size="30" font-weight="700">CampusStay</text>
+</svg>

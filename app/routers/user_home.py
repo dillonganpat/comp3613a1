@@ -1,8 +1,14 @@
-from fastapi import APIRouter, HTTPException, Depends, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi import status
-from app.dependencies.session import SessionDep
-from app.dependencies.auth import AuthDep, IsUserLoggedIn, get_current_user, is_admin
+from decimal import Decimal
+
+from fastapi import Request
+from fastapi.responses import HTMLResponse
+
+from app.dependencies import SessionDep
+from app.dependencies.auth import AuthDep
+from app.repositories.booking import BookingRepository
+from app.repositories.property import PropertyRepository
+from app.services.booking_service import BookingService
+from app.services.property_service import PropertyService
 from . import router, templates
 
 
@@ -10,12 +16,27 @@ from . import router, templates
 async def user_home_view(
     request: Request,
     user: AuthDep,
-    db:SessionDep
+    db: SessionDep,
 ):
+    location = request.query_params.get("location", "").strip()
+    max_price = request.query_params.get("max_price", "")
+
+    property_service = PropertyService(PropertyRepository(db))
+    bookings_service = BookingService(BookingRepository(db))
+    listings = property_service.list_properties(
+        location=location or None,
+        max_price=Decimal(max_price) if max_price else None,
+    )
+    my_bookings = bookings_service.list_my_bookings(user.id)
+
     return templates.TemplateResponse(
-        request=request, 
+        request=request,
         name="app.html",
         context={
-            "user": user
-        }
+            "user": user,
+            "listings": listings,
+            "my_bookings": my_bookings,
+            "location": location,
+            "max_price": max_price,
+        },
     )

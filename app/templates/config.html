@@ -1,11 +1,11 @@
 {% extends "base.html" %}
-{% block title %}Server config{% endblock %}
+{% block title %}CampusStay | Server config{% endblock %}
 
 {% block internal_css %}
 <style>
     body {
-        background: #0f1419;
-        color: #e7ecf3;
+        background: #fff;
+        color: #242424;
         min-height: 100vh;
     }
     .cfg-wrap {
@@ -14,41 +14,41 @@
         padding: 2rem 1rem 3rem;
     }
     .cfg-card {
-        background: #1a222d;
-        border: 1px solid #2a3544;
-        border-radius: 0.75rem;
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.5rem;
         padding: 1.25rem 1.5rem;
         margin-bottom: 1rem;
     }
     .cfg-card h2 {
         font-size: 1.1rem;
         margin-bottom: 1rem;
-        color: #9db0c7;
+        color: #303236;
         text-transform: uppercase;
         letter-spacing: 0.04em;
     }
-    .cfg-muted { color: #8b9bb0; }
-    .badge-ok { background: #198754; }
-    .badge-bad { background: #dc3545; }
+    .cfg-muted { color: #6b7280; }
+    .badge-ok, .badge-bad { background: #555b63; }
     table.cfg td, table.cfg th {
-        border-color: #2a3544;
+        border-color: #e5e7eb;
         vertical-align: top;
         font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
         font-size: 0.85rem;
     }
     .btn-row form { display: inline-block; margin: 0.25rem 0.35rem 0.25rem 0; }
     .form-control, .form-select {
-        background: #0f1419;
-        border-color: #2a3544;
-        color: #e7ecf3;
+        background: #fff;
+        border-color: #d5d7db;
+        color: #242424;
     }
     .form-control:focus, .form-select:focus {
-        background: #0f1419;
-        border-color: #4d6b8a;
-        color: #e7ecf3;
-        box-shadow: none;
+        background: #fff;
+        border-color: #8b9097;
+        color: #242424;
+        box-shadow: 0 0 0 0.15rem rgba(36, 36, 36, 0.08);
     }
     .alert { border: none; }
+    .cfg-wrap > .brand-logo { margin-bottom: 1.5rem; }
 </style>
 {% endblock %}
 
@@ -84,7 +84,7 @@
             <p class="cfg-muted mb-0">Ops console — password gated</p>
         </div>
         <form method="post" action="{{ url_for('config_logout_action') }}">
-            <button class="btn btn-outline-light btn-sm" type="submit">Lock</button>
+            <button class="btn btn-outline-secondary btn-sm" type="submit">Lock</button>
         </form>
     </div>
 
@@ -101,14 +101,14 @@
             <span class="badge badge-bad">DB error</span>
             {% endif %}
             {% if status.is_production %}
-            <span class="badge text-bg-warning">production</span>
+            <span class="badge text-bg-light text-dark border">production</span>
             {% else %}
-            <span class="badge text-bg-info">{{ status.env_mode }}</span>
+            <span class="badge text-bg-light text-dark border">{{ status.env_mode }}</span>
             {% endif %}
-            <span class="badge text-bg-secondary">pid {{ status.pid }}</span>
-            <span class="badge text-bg-secondary">up {{ status.uptime }}</span>
+            <span class="badge text-bg-light text-dark border">pid {{ status.pid }}</span>
+            <span class="badge text-bg-light text-dark border">up {{ status.uptime }}</span>
         </div>
-        <table class="table table-sm table-dark cfg mb-0">
+        <table class="table table-sm cfg mb-0">
             <tbody>
                 <tr><th>Started (UTC)</th><td>{{ status.started_at }}</td></tr>
                 <tr><th>Now (UTC)</th><td>{{ status.now }}</td></tr>
@@ -126,7 +126,7 @@
     <div class="cfg-card">
         <h2>Config &amp; environment</h2>
         <p class="cfg-muted small">Secrets are masked. Values reflect the live process (after cache clears / ENV toggles).</p>
-        <table class="table table-sm table-dark cfg mb-0">
+        <table class="table table-sm cfg mb-0">
             <tbody>
                 {% for key, value in config.items() %}
                 <tr><th>{{ key }}</th><td>{{ value }}</td></tr>
@@ -139,10 +139,10 @@
         <h2>Utilities</h2>
         <div class="btn-row">
             <form method="post" action="{{ url_for('config_ping_db_action') }}">
-                <button class="btn btn-outline-info btn-sm" type="submit">Ping DB</button>
+                <button class="btn btn-outline-secondary btn-sm" type="submit">Ping DB</button>
             </form>
             <form method="post" action="{{ url_for('config_seed_action') }}">
-                <button class="btn btn-outline-success btn-sm" type="submit">Seed demo users</button>
+                <button class="btn btn-outline-secondary btn-sm" type="submit">Seed demo users</button>
             </form>
             <form method="post" action="{{ url_for('config_dispose_pool_action') }}">
                 <button class="btn btn-outline-secondary btn-sm" type="submit">Dispose DB pool</button>
@@ -151,7 +151,7 @@
                 <button class="btn btn-outline-secondary btn-sm" type="submit">Clear settings cache</button>
             </form>
             <form method="post" action="{{ url_for('config_toggle_env_action') }}">
-                <button class="btn btn-outline-warning btn-sm" type="submit">
+                <button class="btn btn-outline-secondary btn-sm" type="submit">
                     Toggle ENV → {% if status.is_production %}development{% else %}production{% endif %}
                 </button>
             </form>

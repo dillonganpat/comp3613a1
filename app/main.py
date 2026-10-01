@@ -5,7 +5,6 @@ import uvicorn
 from fastapi import FastAPI, Request, status
 from starlette.middleware import Middleware
 from starlette.middleware.sessions import SessionMiddleware
-from starlette.responses import RedirectResponse
 
 from app.config import get_settings
 from app.routers import api_router, router, static_files, templates
@@ -45,13 +44,7 @@ async def recover_uninitialized_db(request: Request, call_next):
         if not recover_if_uninitialized(exc):
             raise
         logger.info("Retrying %s after database init", request.url.path)
-        try:
-            return await call_next(request)
-        except Exception:
-            # Schema exists now but the prior response may still need a refresh.
-            if request.method.upper() == "GET":
-                return RedirectResponse(url=str(request.url), status_code=303)
-            raise
+        return await call_next(request)
 
 
 @app.get("/health")

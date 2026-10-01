@@ -1,9 +1,95 @@
 {% extends "authenticated-base.html" %}
-{% block title %}Home{% endblock %}
+{% block title %}CampusStay | Explore listings{% endblock %}
 
 {% block subpage_content %}
-<div class="container-fluid py-2">
-  <h1 class="h4 mb-2">Home</h1>
-  <p class="text-muted mb-0">Workflow screens replace this shell in Phase 5 implement.</p>
+<div class="container-fluid py-2 dashboard-shell">
+  <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4 gap-3">
+    <div>
+      <span class="workflow-badge">Tenant workflow</span>
+      <h1 class="h3 mb-1 mt-2">Browse stays</h1>
+      <p class="text-muted mb-0">Search listings and view details before booking.</p>
+    </div>
+  </div>
+
+  <div class="results-strip mb-3">
+    <span>{{ listings|length }} stay{{ '' if listings|length == 1 else 's' }} available</span>
+  </div>
+
+  <form class="search-panel" method="get" action="{{ url_for('user_home_view') }}">
+    <div class="row g-3 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label" for="location">Location</label>
+        <input id="location" class="form-control" name="location" value="{{ location }}" placeholder="e.g. St. Augustine">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="max_price">Max nightly price</label>
+        <input id="max_price" class="form-control" name="max_price" type="number" min="0" step="10" value="{{ max_price }}" placeholder="500">
+      </div>
+      <div class="col-md-4">
+        <button type="submit" class="btn btn-primary btn-brand w-100">Search</button>
+      </div>
+    </div>
+  </form>
+
+  <div class="row g-4 mt-1">
+    {% for listing in listings %}
+    <div class="col-lg-4">
+      <article class="listing-card">
+        <div class="listing-card-image" style="background-image: linear-gradient(135deg, rgba(57, 115, 99, 0.76), rgba(169, 82, 50, 0.62)), url('{{ listing.image_url or 'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=900&q=80' }}');">
+          <span>{{ listing.location }}</span>
+        </div>
+        <div class="listing-card-body">
+          <div class="listing-meta">
+            <span>{{ listing.bedrooms }} bed</span>
+            <span>{{ listing.bathrooms }} bath</span>
+          </div>
+          <h2>{{ listing.title }}</h2>
+          <p class="listing-location">{{ listing.location }}</p>
+          <p>{{ listing.description[:120] }}{% if listing.description|length > 120 %}...{% endif %}</p>
+          <div class="listing-footer">
+            <strong>TT$ {{ '%.2f' % listing.price_per_night }} / night</strong>
+            <a href="{{ url_for('property_detail_view', property_id=listing.id) }}" class="btn btn-outline-primary btn-soft">View</a>
+          </div>
+        </div>
+      </article>
+    </div>
+    {% else %}
+    <div class="col-12">
+      <div class="empty-state">
+        <h2>No listings match your filters</h2>
+        <p>Try broadening the location or price range.</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="section-block mt-5" id="bookings">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <p class="eyebrow mb-1">Your bookings</p>
+        <h2 class="h4 mb-0">Booked stays</h2>
+      </div>
+    </div>
+
+    {% if my_bookings %}
+    <div class="row g-3">
+      {% for booking in my_bookings %}
+      <div class="col-md-6">
+        <div class="booking-summary">
+          <div>
+            <strong>{{ booking.property.title }}</strong>
+            <div class="small text-muted">{{ booking.check_in }} → {{ booking.check_out }}</div>
+          </div>
+          <span class="status-pill">{{ booking.status }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state small-empty">
+      <p>No bookings yet. Pick a listing to get started.</p>
+    </div>
+    {% endif %}
+  </div>
 </div>
 {% endblock %}

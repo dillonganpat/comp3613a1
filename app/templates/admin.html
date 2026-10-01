@@ -1,9 +1,47 @@
 {% extends "authenticated-base.html" %}
-{% block title %}Admin{% endblock %}
+{% block title %}CampusStay | Landlord dashboard{% endblock %}
 
 {% block subpage_content %}
-<div class="container-fluid py-2">
-  <h1 class="h4 mb-2">Admin</h1>
-  <p class="text-muted mb-0">Admin workflow screens replace this shell in Phase 5 implement.</p>
+<div class="container-fluid py-2 dashboard-shell">
+  <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4 gap-3">
+    <div>
+      <span class="workflow-badge workflow-badge-landlord">Landlord workflow</span>
+      <h1 class="h3 mb-1 mt-2">My listings</h1>
+      <p class="text-muted mb-0">Add a property and keep it visible to future tenants.</p>
+    </div>
+    <a class="btn btn-primary btn-brand" href="{{ url_for('property_new_view') }}">Add property</a>
+  </div>
+
+  <div class="row g-4">
+    {% for property in properties %}
+    <div class="col-lg-6">
+      <article class="listing-card listing-card-admin">
+        <div class="listing-card-image" style="background-image: linear-gradient(135deg, rgba(57, 115, 99, 0.76), rgba(169, 82, 50, 0.62)), url('{{ property.image_url or 'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=900&q=80' }}');">
+          <span>{{ property.location }}</span>
+        </div>
+        <div class="listing-card-body">
+          <div class="listing-meta">
+            <span>{{ property.bedrooms }} bed</span>
+            <span>{{ property.bathrooms }} bath</span>
+          </div>
+          <h2>{{ property.title }}</h2>
+          <p class="listing-location">{{ property.location }}</p>
+          <p>{{ property.description }}</p>
+          <div class="listing-footer">
+            <strong>TT$ {{ '%.2f' % property.price_per_night }} / night</strong>
+            <a href="{{ url_for('property_detail_view', property_id=property.id) }}" class="btn btn-outline-primary btn-soft">Open</a>
+          </div>
+        </div>
+      </article>
+    </div>
+    {% else %}
+    <div class="col-12">
+      <div class="empty-state">
+        <h2>No properties yet</h2>
+        <p>Use the add property button to create your first listing.</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
 </div>
 {% endblock %}

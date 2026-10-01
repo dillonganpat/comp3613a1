@@ -15,9 +15,8 @@ from __future__ import annotations
 
 import argparse
 import sys
+from decimal import Decimal
 from pathlib import Path
-
-
 def _ensure_models_loaded() -> None:
     import app.models  # noqa: F401
 
@@ -50,27 +49,41 @@ def cmd_seed(args: argparse.Namespace) -> None:
     """Insert demo users.
 
     bob / bobpass       (regular_user)
+    alice / alicepass   (admin / landlord on a new database)
     admin / adminpass   (admin)
     """
+    from sqlmodel import select
+
     from app.database import ensure_db_and_tables, get_cli_session
+    from app.models.property import Property
     from app.repositories.user import UserRepository
     from app.schemas.user import AdminCreate, RegularUserCreate
     from app.utilities.security import encrypt_password
 
     _ensure_models_loaded()
     ensure_db_and_tables()
-
     demo_users = [
         ("bob", "bob@example.com", "bobpass", "regular_user"),
+        ("alice", "alice@example.com", "alicepass", "admin"),
         ("admin", "admin@example.com", "adminpass", "admin"),
     ]
 
     created = 0
+    updated = 0
     skipped = 0
+    alice_created = False
     with get_cli_session() as session:
         repo = UserRepository(session)
         for username, email, password, role in demo_users:
-            if repo.get_by_username(username):
+            existing_user = repo.get_by_username(username)
+            if existing_user:
+                if username == "alice" and existing_user.role != role:
+                    existing_user.role = role
+                    session.add(existing_user)
+                    session.commit()
+                    print(f"  update {username} ({role})")
+                    updated += 1
+                    continue
                 print(f"  skip  {username} (already exists)")
                 skipped += 1
                 continue
@@ -79,15 +92,126 @@ def cmd_seed(args: argparse.Namespace) -> None:
                 payload_cls(
                     username=username,
                     email=email,
-                    password=encrypt_password(password),
+                    password_hash=encrypt_password(password),
                     role=role,
                 )
             )
             print(f"  create {username} ({role})")
             created += 1
+            if username == "alice":
+                alice_created = True
 
-    print(f"Seed done — created {created}, skipped {skipped}.")
+        alice = repo.get_by_username("alice")
+        if alice:
+            demo_properties = [
+                (
+                    "Studio Apartment at 12 Watts Street",
+                    "12 Watts Street, St. Augustine, Trinidad and Tobago",
+                    "Bright studio apartment with a queen bed, kitchenette, and a balcony facing the street. Ideal for a student seeking a quiet, secure place within a short walk of UWI and local groceries.",
+                    Decimal("420.00"),
+                    1,
+                    1,
+                    "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80",
+                ),
+                (
+                    "Studio at 4 Evans Lane",
+                    "4 Evans Lane, St. Augustine, Trinidad and Tobago",
+                    "Modern studio apartment with polished tile flooring, a compact dining nook, and a close commute to the campus and nearby cafes on Evans Road.",
+                    Decimal("460.00"),
+                    1,
+                    1,
+                    "https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=900&q=80",
+                ),
+                (
+                    "Studio Apartment at 21 Rapsey Street",
+                    "21 Rapsey Street, St. Augustine, Trinidad and Tobago",
+                    "A comfortable studio with natural light, built-in storage, and a clean modern finish. The location keeps you close to UWI, buses, and everyday conveniences.",
+                    Decimal("430.00"),
+                    1,
+                    1,
+                    "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=900&q=80",
+                ),
+                (
+                    "Studio at 7 Lyndon Road",
+                    "7 Lyndon Road, St. Augustine, Trinidad and Tobago",
+                    "Simple, airy studio apartment with a full bathroom, reliable water and power, and quick access to UWI St. Augustine via the main routes.",
+                    Decimal("490.00"),
+                    1,
+                    1,
+                    "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=900&q=80",
+                ),
+                (
+                    "Studio at 19 Carmody Road",
+                    "19 Carmody Road, St. Augustine, Trinidad and Tobago",
+                    "Well-kept studio with a quiet residential setting and a private sitting area. Good for students who want a calm place near the university and nearby transport.",
+                    Decimal("480.00"),
+                    1,
+                    1,
+                    "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80",
+                ),
+                (
+                    "Studio Apartment at 42 Old Tim Road",
+                    "42 Old Tim Road, St. Augustine, Trinidad and Tobago",
+                    "Furnished studio apartment with a compact kitchenette, soft lighting, and easy access to UWI and the wider St. Augustine area.",
+                    Decimal("450.00"),
+                    1,
+                    1,
+                    "https://images.unsplash.com/photo-1448630360428-65456885c650?auto=format&fit=crop&w=900&q=80",
+                ),
+            ]
+            legacy_demo_titles = (
+                "Harbor View Studio",
+                "Woodbrook City Apartment",
+                "Chaguanas Central Apartment",
+                "San Fernando Garden Apartment",
+            )
+            for legacy_title, property_data in zip(legacy_demo_titles, demo_properties):
+                legacy_property = session.exec(
+                    select(Property).where(Property.title == legacy_title)
+                ).one_or_none()
+                if legacy_property:
+                    (
+                        legacy_property.title,
+                        legacy_property.location,
+                        legacy_property.description,
+                        legacy_property.price_per_night,
+                        legacy_property.bedrooms,
+                        legacy_property.bathrooms,
+                    ) = property_data[:6]
+                    legacy_property.image_url = property_data[6]
+                    legacy_property.owner_id = alice.id
+                    session.add(legacy_property)
+                    session.commit()
+                    print(f"  update demo property: {legacy_property.title}")
+
+            for title, location, description, price, bedrooms, bathrooms, image_url in demo_properties:
+                property_exists = session.exec(
+                    select(Property).where(Property.title == title)
+                ).one_or_none()
+                if property_exists:
+                    continue
+                session.add(
+                    Property(
+                        title=title,
+                        location=location,
+                        description=description,
+                        image_url=image_url,
+                        price_per_night=price,
+                        bedrooms=bedrooms,
+                        bathrooms=bathrooms,
+                        available=True,
+                        owner_id=alice.id,
+                    )
+                )
+                session.commit()
+                print(f"  create demo property: {title}")
+
+    print(f"Seed done — created {created}, updated {updated}, skipped {skipped}.")
     print("Login with bob/bobpass or admin/adminpass")
+    if alice_created:
+        print("New landlord login: alice/alicepass")
+    elif updated:
+        print("Alice is now a landlord; her existing password was preserved.")
 
 
 def cmd_run(args: argparse.Namespace) -> None:

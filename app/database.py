@@ -3,6 +3,7 @@ import threading
 import time
 from contextlib import contextmanager
 
+from sqlalchemy import inspect, text
 from sqlalchemy.exc import DBAPIError, OperationalError, ProgrammingError
 from sqlmodel import SQLModel, Session, create_engine
 
@@ -36,6 +37,15 @@ engine = create_engine(
 def create_db_and_tables() -> None:
     # Ensure model modules are imported so tables are registered on metadata.
     import app.models  # noqa: F401
+
+    inspector = inspect(engine)
+    if "user" in inspector.get_table_names():
+        user_columns = {column["name"] for column in inspector.get_columns("user")}
+        if "password" in user_columns and "password_hash" not in user_columns:
+            with engine.begin() as connection:
+                connection.execute(
+                    text('ALTER TABLE "user" RENAME COLUMN "password" TO "password_hash"')
+                )
 
     SQLModel.metadata.create_all(engine)
 

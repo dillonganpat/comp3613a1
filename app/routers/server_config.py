@@ -240,14 +240,14 @@ async def config_reinit_db_action(
         if drop:
             drop_all()
         ensure_db_and_tables()
-        created = skipped = 0
+        created = updated = skipped = 0
         if seed:
-            created, skipped = _seed_demo_users()
+            created, skipped, updated = _seed_demo_users()
         msg = "Database reinitialized"
         if drop:
             msg += " (tables dropped)"
         if seed:
-            msg += f"; seed created={created} skipped={skipped}"
+            msg += f"; seed created={created} updated={updated} skipped={skipped}"
         flash(request, msg, "success")
     except Exception as exc:  # noqa: BLE001
         flash(request, f"DB reinit failed: {exc}", "danger")
@@ -265,10 +265,10 @@ async def config_seed_action(request: Request):
         return gate
     try:
         ensure_db_and_tables()
-        created, skipped = _seed_demo_users()
+        created, skipped, updated = _seed_demo_users()
         flash(
             request,
-            f"Seed done — created {created}, skipped {skipped}",
+            f"Seed done — created {created}, updated {updated}, skipped {skipped}",
             "success",
         )
     except Exception as exc:  # noqa: BLE001
@@ -370,7 +370,7 @@ async def config_clear_cache_action(request: Request):
     )
 
 
-def _seed_demo_users() -> tuple[int, int]:
+def _seed_demo_users() -> tuple[int, int, int]:
     from app.database import get_cli_session
     from app.repositories.user import UserRepository
     from app.schemas.user import AdminCreate, RegularUserCreate
@@ -378,14 +378,23 @@ def _seed_demo_users() -> tuple[int, int]:
 
     demo_users = [
         ("bob", "bob@example.com", "bobpass", "regular_user"),
+            ("alice", "alice@example.com", "alicepass", "admin"),
         ("admin", "admin@example.com", "adminpass", "admin"),
     ]
     created = 0
+    updated = 0
     skipped = 0
     with get_cli_session() as session:
         repo = UserRepository(session)
         for username, email, password, role in demo_users:
-            if repo.get_by_username(username):
+            existing_user = repo.get_by_username(username)
+            if existing_user:
+                if username == "alice" and existing_user.role != role:
+                    existing_user.role = role
+                    session.add(existing_user)
+                    session.commit()
+                    updated += 1
+                    continue
                 skipped += 1
                 continue
             payload_cls = AdminCreate if role == "admin" else RegularUserCreate
@@ -393,9 +402,9 @@ def _seed_demo_users() -> tuple[int, int]:
                 payload_cls(
                     username=username,
                     email=email,
-                    password=encrypt_password(password),
+                    password_hash=encrypt_password(password),
                     role=role,
                 )
             )
             created += 1
-    return created, skipped
+    return created, skipped, updated

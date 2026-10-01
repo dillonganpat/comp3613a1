@@ -5,51 +5,122 @@ Draft this file with the Guide. **Update it after every phase milestone** before
 Do not put your student ID in this file if you will commit it. The PDF cover adds your name and ID at export time.
 
 ## Assigned project
+Student Accommodation
 
 ## Three workflows
 
-### 1.
+### 1. Search/Browse Listings (Tenant)
 
-### 2.
+### 2. List a Property (Landlord)
 
-### 3.
+### 3. Book a Listing (Tenant)
 
 ## Use case diagram
 
+[Use-case diagram source](diagrams/use-case.json).
+
 ![Use case diagram](diagrams/use-case.png)
+
+Tenant and Landlord share Login/Authentication; a signed-in session is required
+for all three named workflows. Search/Browse Listings and Book a Listing belong
+to Tenant, while List a Property belongs to Landlord. Book a Listing includes
+View Listing Details, which is a separate use case and must happen before a
+booking. No other use cases are shared.
 
 ## Model diagram
 
-First draft. Update this section in Phase 5 when polish revises the model, and note what changed.
+The app model is centered on users, properties, and bookings. A landlord owns many property listings, and each property can have many bookings. A tenant makes many bookings, and each booking is tied to one property and one tenant.
 
 ```mermaid
 erDiagram
-  ENTITY ||--o{ OTHER : relates
+  USER ||--o{ PROPERTY : owns
+  USER ||--o{ BOOKING : books
+  PROPERTY ||--o{ BOOKING : has
+
+  USER {
+    int id PK
+    string username
+    string email
+    string password_hash
+    string role
+  }
+
+  PROPERTY {
+    int id PK
+    string title
+    string location
+    string description
+    decimal price_per_night
+    int bedrooms
+    int bathrooms
+    bool available
+    int owner_id FK
+  }
+
+  BOOKING {
+    int id PK
+    int property_id FK
+    int tenant_id FK
+    date check_in
+    date check_out
+    string status
+    decimal total_price
+  }
 ```
 
 ## Wireframes
 
-Embed each student-crafted wireframe here (Phase 4). Paths are relative to this file:
+The updated combined wireframe labels the two parts of each named workflow, includes the spelling correction, and shows login as the shared entry point before protected workflows. The same image covers search/browse listings, listing a property, and booking a listing.
 
-```markdown
-### Explore / Search Publications
+### Student Accommodation Wireframe
 
-![Explore / Search Publications](wireframes/explore.png)
-```
+![Student Accommodation Wireframe](wireframes/Wireframe%20design.png)
+
+<!-- student-build:wireframe-coverage
+use_case: Login/Authentication (Tenant and Landlord)
+image: docs/wireframes/Wireframe design.png
+covered: yes
+-->
+
+<!-- student-build:wireframe-coverage
+use_case: Search/Browse Listings (Tenant)
+image: docs/wireframes/Wireframe design.png
+covered: yes
+-->
+
+<!-- student-build:wireframe-coverage
+use_case: List a Property (Landlord)
+image: docs/wireframes/Wireframe design.png
+covered: yes
+-->
+
+<!-- student-build:wireframe-coverage
+use_case: Book a Listing (Tenant)
+image: docs/wireframes/Wireframe design.png
+covered: yes
+-->
 
 `python manage.py report` also embeds any PNG/JPG still missing from `docs/wireframes/`.
 
 ## Theming
 
-Branding preferences and how they were applied (landing / login / register).
+Phase 5 theme direction: CampusStay uses a clean, minimal white background, dark gray text, light gray borders, rounded corners, and generous whitespace. Coral-red (#FF385C) is reserved for primary buttons and key actions. A monochrome CampusStay logo and sticky role-aware top navigation are shared across pages; tenants get browse/bookings links and landlords get listings/add-property links.
 
 ## Implementation notes
 
-One named workflow at a time. Include verify notes and polish / model revisions (Phase 5). Do not treat the first build as final.
+Implemented the Phase 5 accommodation app as a layered FastAPI build:
+
+- Login/Authentication: `/login` authenticates users and directs tenants to `/app` and landlords to `/admin`; `/register` creates accounts.
+- Search/Browse Listings: the tenant dashboard at `/app` filters listings by location and max nightly price and displays listing cards for browsing.
+- View Listing Details: listing cards open `/properties/{property_id}`, where tenants can review realistic studio listings around UWI-area streets and finalise a stay before booking. Demo apartments are focused around UWI St. Augustine and nearby residential streets such as Watts, Evans, Rapsey, Lyndon, Old Tim, and Carmody Road.
+- List a Property: the landlord dashboard at `/admin` and the `/properties/new` form support property creation; both creation routes require the landlord/admin dependency and use a service/repository layer rather than route-level SQL.
+- Book a Listing: the detail page includes a booking form that calculates the nightly total and submits a booking record through the booking service layer. Booking validation rejects past dates, invalid checkout dates, and any overlapping stay for the same property.
+
+The app was verified with the seeded users `bob / bobpass`, `alice / alicepass`, and `admin / adminpass`, and the property listing, booking validation, and booking submission flow were exercised successfully against the live server.
 
 ## Deployed app
 
-Phase 6. Public Render URL (not localhost). Markers open this to mark the three workflows.
+Phase 6 is not yet deployed in this workspace. A public Render URL will be added after the final deployment step is completed.
 
 https://
 
@@ -58,6 +129,7 @@ https://
 Every account a marker needs, including extra users you added. Starter accounts:
 
 - bob / bobpass — regular user
+- alice — landlord (admin role); new databases seed `alicepass`, while existing Alice credentials are preserved
 - admin / adminpass — admin
 
 ## YouTube URL
