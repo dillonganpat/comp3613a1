@@ -5,7 +5,7 @@ Draft this file with the Guide. **Update it after every phase milestone** before
 Do not put your student ID in this file if you will commit it. The PDF cover adds your name and ID at export time.
 
 ## Assigned project
-Student Accommodation
+Student Accommodation (website brand: CampusStay)
 
 ## Three workflows
 
@@ -74,12 +74,20 @@ check-in dates before today, requires check-out to be after check-in, and reject
 date ranges that overlap an existing booking for the same property. Back-to-back
 stays are allowed when one booking checks out on the date the next checks in.
 
+## Design decisions
+
+Pricing remains nightly; the product did not switch to monthly rentals. Accounts
+have one role rather than both tenant and landlord roles, keeping the three MVP
+workflows focused. In the current app, tenant accounts use `regular_user`, while
+landlord property-management routes require the `admin` role.
+
 ## Wireframes
 
 One combined wireframe image is present in the workspace. It shows login as the
 shared entry point and covers search/browse listings, listing a property, and
-booking a listing. The workspace does not contain three separate wireframe
-images; add those files if separate images are required for submission.
+booking a listing. The coverage annotations below reference this same image for
+all three workflows. The workspace does not contain three separate wireframe
+image files, so there are no individual image references to verify.
 
 ### Student Accommodation Wireframe
 
@@ -125,11 +133,17 @@ Implemented the Phase 5 accommodation app as a layered FastAPI build:
 - List a Property: the landlord dashboard at `/admin` and the `/properties/new` form support property creation; both creation routes require the landlord/admin dependency and use a service/repository layer rather than route-level SQL.
 - Book a Listing: the detail page accepts check-in and check-out dates, calculates the total using the nightly rate, and submits a booking through the service layer. The service rejects past check-in dates, checkout dates that are not after check-in, and overlapping bookings for the same property.
 
-The seeded test accounts are `bob / bobpass`, `alice / alicepass` on a new database, and `admin / adminpass`. A local browser check confirmed that tenant login redirects to `/app` and the listing page renders. The report does not record an end-to-end verification of the booking submission flow.
+The seeded test accounts are `bob / bobpass`, `alice / alicepass` on a new database, and `admin / adminpass`. End-to-end browser verification on the live Render site confirms the tenant booking flow works as intended:
+
+- Valid booking: logged in as `bob`, selected property 1, entered check-in `2026-10-10` and check-out `2026-10-12`, and the booking submitted successfully with a success flash message and a booking entry under "My bookings".
+- Invalid date rejection: entered check-in `2026-10-09` and check-out `2026-10-08`, and the app rejected the request with the validation message "Check-out must be after check-in."
+- Double-booking rejection: after booking `2026-10-10` to `2026-10-12`, another attempt with overlapping dates `2026-10-11` to `2026-10-12` was rejected with the overlap warning "This property is already booked for part of that date range."
+
+The live app therefore validates both happy-path and guard-rail date checks before creating a booking.
 
 ## Deployed app
 
-Phase 6 deployment is not complete. No public Render URL is available yet.
+The app is live on Render at https://faststarter.onrender.com and uses the CampusStay branding throughout the website.
 
 ## Logins
 
