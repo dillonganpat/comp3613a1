@@ -68,14 +68,11 @@ async def property_detail_view(
     if property is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Property not found")
 
-    nights = 3
     return templates.TemplateResponse(
         request=request,
         name="property_detail.html",
         context={
             "user": user,
             "property": property,
-            "nights": nights,
-            "estimated_total": property.price_per_night * nights,
         },
     )

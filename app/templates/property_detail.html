@@ -39,7 +39,7 @@
             <input class="form-control" id="check_out" name="check_out" type="date" required>
           </div>
           <div class="booking-total" id="bookingTotal">
-            Estimate: TT$ {{ '%.2f' % estimated_total }}
+            Estimate: Select dates
           </div>
           <button type="submit" class="btn btn-primary btn-brand w-100 mt-3">Confirm booking</button>
         </form>
@@ -59,7 +59,7 @@
     today.setHours(0, 0, 0, 0);
 
     if (!checkIn.value || !checkOut.value) {
-      bookingTotal.textContent = 'Estimate: TT$ ' + Number(propertyPrice).toFixed(2);
+      bookingTotal.textContent = 'Estimate: Select dates';
       return;
     }
 

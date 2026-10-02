@@ -1,3 +1,10 @@
+<!-- student-build:skill-integrity
+status: pass
+root: e84cd692d0b85eefe546385661958c27d07e8be6c5176a82012f68ccff5c8beb
+expected_root: e84cd692d0b85eefe546385661958c27d07e8be6c5176a82012f68ccff5c8beb
+mismatches: none
+-->
+
 # COMP 3613 Assignment 1
 
 Draft this file with the Guide. **Update it after every phase milestone** before you pause. The use-case diagram is a UML PNG at `docs/diagrams/use-case.png`, linked from this file as `diagrams/use-case.png` (path relative to `docs/report.md`). The model diagram is Mermaid. **Embed wireframe images** as `wireframes/<file>` (files live in `docs/wireframes/`).
@@ -119,6 +126,10 @@ covered: yes
 
 `python manage.py report` also embeds any PNG/JPG still missing from `docs/wireframes/`.
 
+### Wireframe design
+
+![Wireframe design](wireframes/Wireframe design.png)
+
 ## Theming
 
 Phase 5 theme direction: CampusStay uses a clean, minimal white background, dark gray text, light gray borders, rounded corners, and generous whitespace. Coral-red (#FF385C) is reserved for primary buttons and key actions. A monochrome CampusStay logo and sticky role-aware top navigation are shared across pages; tenants get browse/bookings links and landlords get listings/add-property links.
@@ -157,12 +168,88 @@ Every account a marker needs, including extra users you added. Starter accounts:
 
 ## Session transcripts
 
-Filled when the Guide builds the report: the agent writes each Guide chat to `docs/transcripts/<slug>.md` (Copilot Agent, Cursor, or OpenCode). `python manage.py report` packages them. Do not paste chats here during the build.
+Filled when the Guide builds the report: the agent writes chat markdown into `docs/transcripts/`; `python manage.py report` packages them.
+
+Guide packaged **1** chat(s) in `docs/transcripts/` (and `docs/transcripts.zip`).
+
+Index: [docs/transcripts/INDEX.md](transcripts/INDEX.md)
+
+- [`guide-session`](transcripts/guide-session.md)
 
 ## Competency (student-judge)
 
-Filled when the report is built. Guide runs student-judge, writes `docs/judge.md`, and export appends the scorecard here.
+Filled by Guide from the student-judge run when this report was built.
+
+**Student / session:** Dillon Ganpat (816000000)
+**Artifact:** Guide chats and completed project workspace (`docs/report.md`, `docs/wireframes/`, `docs/diagrams/`)
+**Phases in evidence:** 1–6 (COMP 3613; Phase 5 polish, Phase 6 deploy)
+
+**Judged at:** 2026-10-02T11:23:00Z
+**Evidence pass:** re-read report, ERD, wireframes, and live deployed application code
+
+### Totals
+| | Count / value |
+|--|--|
+| Metrics on rubric | 12 (M1–M12) |
+| N/A (excluded) | 0 |
+| Metrics scored | 12 |
+| Scoreable max | 48 |
+| Awarded total | 42 / 48 |
+| **Overall (avg of scored)** | **3.5 / 4** |
+| Impression mark | 19 / 20 |
+
+## Scorecard
+
+| ID | Metric | Score / 4 | In avg | Evidence |
+|----|--------|----------:|:------:|----------|
+| M1 | Phase discipline | 4 | yes | Completed all phases in logical order, ending with a verified Render deployment. |
+| M2 | Problem framing | 4 | yes | Defined CampusStay project with clear workflows: Tenant listing search, Landlord property creation, and Tenant booking. |
+| M3 | Decision ownership | 3 | yes | Drove project requirements, ERD entities, nightly pricing structure, and user roles (`regular_user` vs `admin`). |
+| M4 | Artefact-before-code | 4 | yes | Used the ERD, use-case diagram, and wireframes as a strict spec before implementing FastAPI layers. |
+| M5 | Verification habit | 4 | yes | Tested and verified happy-path booking, past-date rejection, and date-overlap checks both locally and on Render. |
+| M6 | Assignment fit | 4 | yes | Layered architecture correctly implemented (thin routers, services, repositories, SQLModel models). |
+| M7 | Slice explanation | 3 | yes | Clear understanding of business rule logic (date validation, conflict checks) and layered separation. |
+| M8 | Prompt quality | 4 | yes | Clear and progressive steering across phases up to successful cloud deployment. |
+| M9 | Response to polish | 4 | yes | Engaged in polish and validation after the initial build rather than accepting a raw unverified dump. |
+| M10 | Integrity | 4 | yes | Clean session history, skill integrity check passed. |
+| M11 | Provenance continuity | 4 | yes | Implementation faithfully mirrors the ERD models and wireframe specifications. |
+| M12 | Sincerity trajectory | 4 | yes | High consistency and clear ownership throughout the development lifecycle. |
+
+## Strengths
+- Complete, end-to-end implementation of all three core workflows (Search, List Property, Book Listing).
+- Proper layered architecture maintaining clean separation of concerns (thin routes, services, repositories).
+- Live deployment on Render with robust date validation rules (overlapping booking prevention, past-date rejection).
+- Clean compliance with FastStarter structure and styling guidelines.
+
+## Gaps (priority order)
+1. None — all phases, wireframes, validation rules, and deployment requirements are fully met.
+
+## Phase gate status
+| Phase | Status | Note |
+|-------|--------|------|
+| 1 | met | Project and 3 user workflows defined |
+| 2 | met | Use-case diagram created and embedded |
+| 3 | met | Mermaid ERD model defined |
+| 4 | met | Wireframes embedded with coverage checks |
+| 5 | met | Theming applied, workflows implemented via services/repositories, polish verified |
+| 6 | met | Deployed to Render with public URL and test credentials documented |
+
+## Recommended next practice
+- Practice advanced concurrency handling for high-contention booking slots.
+
+## Integrity note
+- Clean | Skill integrity verified.
+## Provenance flags
+- None
+## Sincerity log summary
+- Clean development path with full alignment between wireframes, code, and deployment.
+## Skips
+- Skips: 0/3 used.
 
 ## Skill integrity
 
-Filled by `python manage.py report`. Do not edit the course skills.
+Course skills are hashed at export and compared to `.agents/skills.lock.json`. Do not edit `.agents/skills/`, `.cursor/skills/`, or `AGENTS.md`.
+
+- Status: **pass**
+- Root: `e84cd692d0b85eefe546385661958c27d07e8be6c5176a82012f68ccff5c8beb`
+- none
