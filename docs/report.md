@@ -160,9 +160,9 @@ The app is live on Render at https://faststarter.onrender.com and uses the Campu
 
 Every account a marker needs, including extra users you added. Starter accounts:
 
-- bob / bobpass — regular user
-- alice — landlord (admin role); new databases seed `alicepass`, while existing Alice credentials are preserved
-- admin / adminpass — admin
+- bob / bobpass — regular user (Tenant)
+- admin / adminpass — admin (Landlord)
+- alice / alicepass — alternative landlord account
 
 ## YouTube URL
 

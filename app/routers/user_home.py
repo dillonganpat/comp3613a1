@@ -19,12 +19,14 @@ async def user_home_view(
     db: SessionDep,
 ):
     location = request.query_params.get("location", "").strip()
+    min_price = request.query_params.get("min_price", "")
     max_price = request.query_params.get("max_price", "")
 
     property_service = PropertyService(PropertyRepository(db))
     bookings_service = BookingService(BookingRepository(db))
     listings = property_service.list_properties(
         location=location or None,
+        min_price=Decimal(min_price) if min_price else None,
         max_price=Decimal(max_price) if max_price else None,
     )
     my_bookings = bookings_service.list_my_bookings(user.id)
@@ -37,6 +39,7 @@ async def user_home_view(
             "listings": listings,
             "my_bookings": my_bookings,
             "location": location,
+            "min_price": min_price,
             "max_price": max_price,
         },
     )

@@ -24,8 +24,8 @@ class PropertyService:
         )
         return self.property_repo.create(property_data)
 
-    def list_properties(self, location: str | None = None, max_price: Decimal | None = None) -> list[Property]:
-        return self.property_repo.list_all(location=location, max_price=max_price)
+    def list_properties(self, location: str | None = None, min_price: Decimal | None = None, max_price: Decimal | None = None) -> list[Property]:
+        return self.property_repo.list_all(location=location, min_price=min_price, max_price=max_price)
 
     def get_property(self, property_id: int) -> Property | None:
         return self.property_repo.get_by_id(property_id)

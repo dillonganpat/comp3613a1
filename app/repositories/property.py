@@ -20,10 +20,12 @@ class PropertyRepository:
     def get_by_id(self, property_id: int) -> Optional[Property]:
         return self.db.get(Property, property_id)
 
-    def list_all(self, location: str | None = None, max_price: Decimal | None = None) -> list[Property]:
+    def list_all(self, location: str | None = None, min_price: Decimal | None = None, max_price: Decimal | None = None) -> list[Property]:
         statement = select(Property).where(Property.available.is_(True))
         if location:
             statement = statement.where(Property.location.ilike(f"%{location}%"))
+        if min_price is not None:
+            statement = statement.where(Property.price_per_night >= min_price)
         if max_price is not None:
             statement = statement.where(Property.price_per_night <= max_price)
         statement = statement.order_by(Property.price_per_night.asc())

@@ -17,15 +17,19 @@
 
   <form class="search-panel" method="get" action="{{ url_for('user_home_view') }}">
     <div class="row g-3 align-items-end">
-      <div class="col-md-4">
+      <div class="col-md-3">
         <label class="form-label" for="location">Location</label>
         <input id="location" class="form-control" name="location" value="{{ location }}" placeholder="e.g. St. Augustine">
       </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
+        <label class="form-label" for="min_price">Min nightly price</label>
+        <input id="min_price" class="form-control" name="min_price" type="number" min="0" step="10" value="{{ min_price }}" placeholder="0">
+      </div>
+      <div class="col-md-3">
         <label class="form-label" for="max_price">Max nightly price</label>
         <input id="max_price" class="form-control" name="max_price" type="number" min="0" step="10" value="{{ max_price }}" placeholder="500">
       </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
         <button type="submit" class="btn btn-primary btn-brand w-100">Search</button>
       </div>
     </div>
