@@ -21,6 +21,10 @@ async def booking_create_action(
     check_in: date = Form(),
     check_out: date = Form(),
 ):
+    if user.role == "admin":
+        flash(request, "Landlords are not permitted to book properties.", "danger")
+        return RedirectResponse(url=request.url_for("property_detail_view", property_id=property_id), status_code=status.HTTP_303_SEE_OTHER)
+
     property_repo = PropertyRepository(db)
     property = property_repo.get_by_id(property_id)
     if property is None:

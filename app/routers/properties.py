@@ -49,7 +49,7 @@ async def property_create_action(
         bathrooms=bathrooms,
         image_url=image_url or None,
     )
-    flash(request, "Property listed successfully.", "success")
+    flash(request, f"Success! Your property '{title}' has been successfully posted.", "success")
     return RedirectResponse(
         url=request.url_for("admin_home_view"),
         status_code=status.HTTP_303_SEE_OTHER,
