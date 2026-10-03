@@ -30,6 +30,10 @@
         </a>
         <nav class="site-nav-links" aria-label="Primary navigation">
             {% if user is defined %}
+                <div class="d-inline-flex align-items-center me-3 px-3 py-1 rounded-pill bg-light border text-dark fw-semibold" style="font-size: 0.85rem;">
+                    <span class="material-symbols-outlined me-1" style="font-size: 1.1rem; color: #ff385c;">account_circle</span>
+                    <span>{{ user.username }} ({{ 'Landlord' if user.role == 'admin' else 'Tenant' }})</span>
+                </div>
                 {% if user.role == "admin" %}
                 <a class="site-nav-link{% if request.url.path == '/admin' %} is-active{% endif %}" href="{{ url_for('admin_home_view') }}">My listings</a>
                 <a class="site-nav-link{% if request.url.path.startswith('/properties/new') %} is-active{% endif %}" href="{{ url_for('property_new_view') }}">Add a property</a>

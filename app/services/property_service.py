@@ -32,3 +32,9 @@ class PropertyService:
 
     def list_by_owner(self, owner_id: int) -> list[Property]:
         return self.property_repo.list_by_owner(owner_id)
+
+    def delete_property(self, property_id: int, user_id: int) -> bool:
+        property_obj = self.property_repo.get_by_id(property_id)
+        if not property_obj or property_obj.owner_id != user_id:
+            return False
+        return self.property_repo.delete(property_id)

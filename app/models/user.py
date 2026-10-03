@@ -20,3 +20,4 @@ class User(UserBase, table=True):
 
     properties: list["Property"] = Relationship(back_populates="owner")
     bookings: list["Booking"] = Relationship(back_populates="tenant")
+    reviews: list["Review"] = Relationship(back_populates="user")

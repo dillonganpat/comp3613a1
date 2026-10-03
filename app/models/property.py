@@ -6,6 +6,7 @@ from sqlmodel import Field, Relationship, SQLModel
 if TYPE_CHECKING:
     from app.models.booking import Booking
     from app.models.user import User
+    from app.models.review import Review
 
 
 class PropertyBase(SQLModel):
@@ -25,6 +26,10 @@ class Property(PropertyBase, table=True):
 
     owner: Optional["User"] = Relationship(back_populates="properties")
     bookings: list["Booking"] = Relationship(
+        back_populates="property",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan"},
+    )
+    reviews: list["Review"] = Relationship(
         back_populates="property",
         sa_relationship_kwargs={"cascade": "all, delete-orphan"},
     )

@@ -35,6 +35,10 @@ class PropertyRepository:
         statement = select(Property).where(Property.owner_id == owner_id).order_by(Property.id.desc())
         return self.db.exec(statement).all()
 
-    def count_by_owner(self, owner_id: int) -> int:
-        statement = select(func.count()).select_from(Property).where(Property.owner_id == owner_id)
-        return int(self.db.exec(statement).one())
+    def delete(self, property_id: int) -> bool:
+        property_db = self.db.get(Property, property_id)
+        if not property_db:
+            return False
+        self.db.delete(property_db)
+        self.db.commit()
+        return True

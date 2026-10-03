@@ -56,6 +56,24 @@ async def property_create_action(
     )
 
 
+@router.post("/properties/{property_id}/delete", response_class=HTMLResponse)
+async def property_delete_action(
+    request: Request,
+    user: AdminDep,
+    db: SessionDep,
+    property_id: int,
+):
+    property_service = PropertyService(PropertyRepository(db))
+    success = property_service.delete_property(property_id, user.id)
+    if not success:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Cannot delete property")
+    flash(request, "Property successfully deleted.", "success")
+    return RedirectResponse(
+        url=request.url_for("admin_home_view"),
+        status_code=status.HTTP_303_SEE_OTHER,
+    )
+
+
 @router.get("/properties/{property_id}", response_class=HTMLResponse)
 async def property_detail_view(
     request: Request,

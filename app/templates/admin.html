@@ -29,7 +29,12 @@
           <p>{{ property.description }}</p>
           <div class="listing-footer">
             <strong>TT$ {{ '%.2f' % property.price_per_night }}</strong>
-            <a href="{{ url_for('property_detail_view', property_id=property.id) }}" class="btn btn-outline-primary btn-soft">Open</a>
+            <div class="d-flex gap-2">
+              <a href="{{ url_for('property_detail_view', property_id=property.id) }}" class="btn btn-outline-primary btn-soft">Open</a>
+              <form method="post" action="{{ url_for('property_delete_action', property_id=property.id) }}" onsubmit="return confirm('Are you sure you want to delete this property?');">
+                <button type="submit" class="btn btn-outline-danger btn-soft">Delete</button>
+              </form>
+            </div>
           </div>
         </div>
       </article>
