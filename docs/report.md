@@ -141,7 +141,7 @@ Implemented the Phase 5 accommodation app as a layered FastAPI build:
 - Login/Authentication: `/login` authenticates users and directs tenants to `/app` and landlords to `/admin`; `/register` creates accounts.
 - Search/Browse Listings: the tenant dashboard at `/app` filters listings by location and max nightly price and displays listing cards for browsing.
 - View Listing Details: listing cards open `/properties/{property_id}`, where tenants can review listing details before booking. Seeded properties cover UWI-area streets (Watts, Evans, Rapsey, Lyndon, Carmody, Old Tim) with **2 properties per street** and distinct nightly rates ranging from TT$420 to TT$680.
-- List a Property & Delete Property: the landlord dashboard at `/admin` and the `/properties/new` form support property creation, and each listing card now features a **Delete** action allowing landlords to remove their properties securely. Both creation and deletion require landlord authentication and use the service/repository layer.
+- List a Property & Delete Property: the landlord dashboard at `/admin` and the `/properties/new` form support property creation (demonstrated in the demo video using the `admin` account), and each listing card now features a **Delete** action allowing landlords to remove their properties securely. Both creation and deletion require landlord authentication and use the service/repository layer.
 - Book a Listing: the detail page accepts check-in and check-out dates, calculates the total using the nightly rate, and submits a booking through the service layer. The service rejects past check-in dates, checkout dates that are not after check-in, and overlapping bookings for the same property.
 
 The seeded test accounts are `bob / bobpass`, `alice / alicepass` on a new database, and `admin / adminpass`. End-to-end browser verification on the live Render site confirms the tenant booking flow works as intended:
@@ -161,7 +161,7 @@ The app is live on Render at https://faststarter.onrender.com and uses the Campu
 Every account a marker needs, including extra users you added. Starter accounts:
 
 - bob / bobpass — regular user (Tenant)
-- admin / adminpass — admin (Landlord)
+- admin / adminpass — admin (Landlord) — *Note: Used for the Landlord workflow (List a Property) in the demo video.*
 - alice / alicepass — alternative landlord account
 
 ## YouTube URL
