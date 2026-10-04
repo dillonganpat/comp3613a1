@@ -595,6 +595,9 @@ def _cover_html(
     rows = [
         ("Student name", html_lib.escape(name), False),
         ("Student ID", html_lib.escape(student_id), False),
+        ("GitHub repository", '<a href="https://github.com/dillonganpat/comp3613a1">https://github.com/dillonganpat/comp3613a1</a>', False),
+        ("YouTube video", '<a href="https://www.youtube.com/watch?v=JdDjkQRrT7M">https://www.youtube.com/watch?v=JdDjkQRrT7M</a>', False),
+        ("Agent used", "GitHub Copilot Agent with a Gemini model via BYOK, plus OpenCode for final report packaging", False),
         ("Deployed app", html_lib.escape(app_url), False),
         ("Logins", login_html, False),
         ("Skill integrity", integrity_value, not integrity.ok),

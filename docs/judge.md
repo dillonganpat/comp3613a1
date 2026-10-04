@@ -1,6 +1,6 @@
 # student-judge competency report
 
-**Student / session:** Dillon Ganpat (816000000)
+**Student / session:** Dillon Ganpat (816044402)
 **Artifact:** Guide chats and completed project workspace (`docs/report.md`, `docs/wireframes/`, `docs/diagrams/`)
 **Phases in evidence:** 1–6 (COMP 3613; Phase 5 polish, Phase 6 deploy)
 

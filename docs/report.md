@@ -7,10 +7,6 @@ mismatches: none
 
 # COMP 3613 Assignment 1
 
-Draft this file with the Guide. **Update it after every phase milestone** before you pause. The use-case diagram is a UML PNG at `docs/diagrams/use-case.png`, linked from this file as `diagrams/use-case.png` (path relative to `docs/report.md`). The model diagram is Mermaid. **Embed wireframe images** as `wireframes/<file>` (files live in `docs/wireframes/`).
-
-Do not put your student ID in this file if you will commit it. The PDF cover adds your name and ID at export time.
-
 ## Assigned project
 Student Accommodation (website brand: CampusStay)
 
@@ -90,45 +86,11 @@ landlord property-management routes require the `admin` role.
 
 ## Wireframes
 
-One combined wireframe image is present in the workspace. It shows login as the
-shared entry point and covers search/browse listings, listing a property, and
-booking a listing. The coverage annotations below reference this same image for
-all three workflows. The workspace does not contain three separate wireframe
-image files, so there are no individual image references to verify.
+One combined wireframe image is present in the workspace. It shows login as the shared entry point and covers search/browse listings, listing a property, and booking a listing. The coverage annotations below reference this same image for all three workflows.
 
 ### Student Accommodation Wireframe
 
-![Student Accommodation Wireframe](wireframes/Wireframe%20design.png)
-
-<!-- student-build:wireframe-coverage
-use_case: Login/Authentication (Tenant and Landlord)
-image: docs/wireframes/Wireframe design.png
-covered: yes
--->
-
-<!-- student-build:wireframe-coverage
-use_case: Search/Browse Listings (Tenant)
-image: docs/wireframes/Wireframe design.png
-covered: yes
--->
-
-<!-- student-build:wireframe-coverage
-use_case: List a Property (Landlord)
-image: docs/wireframes/Wireframe design.png
-covered: yes
--->
-
-<!-- student-build:wireframe-coverage
-use_case: Book a Listing (Tenant)
-image: docs/wireframes/Wireframe design.png
-covered: yes
--->
-
-`python manage.py report` also embeds any PNG/JPG still missing from `docs/wireframes/`.
-
-### Wireframe design
-
-![Wireframe design](wireframes/Wireframe design.png)
+![Student Accommodation Wireframe](wireframes/Wireframe design.png)
 
 ## Theming
 
@@ -161,11 +123,21 @@ The app is live on Render at https://faststarter.onrender.com and uses the Campu
 Every account a marker needs, including extra users you added. Starter accounts:
 
 - bob / bobpass — regular user (Tenant)
-- admin / adminpass — admin (Landlord) — *Note: Used for the Landlord workflow (List a Property) in the demo video.*
+- admin / adminpass — admin (Landlord) — Note: Used for the Landlord workflow (List a Property) in the demo video.
 - alice / alicepass — alternative landlord account
+
+## Known limitations and future work
+
+The following items represent deliberate MVP scope decisions and future enhancements:
+- **Payments:** Payment gateway integration (e.g., Stripe) is deferred; bookings confirm without immediate financial transaction processing.
+- **Reviews:** Tenant reviews and ratings for properties and landlords are not implemented in the MVP.
+- **Monthly pricing:** Pricing is strictly calculated on a nightly basis; monthly rental pricing rules are not supported.
+- **Dual-role accounts:** User accounts have a single role (`regular_user` or `admin`) rather than supporting dual tenant/landlord roles simultaneously.
+- **Concurrent double-booking under heavy load:** While the service layer checks for overlapping booking date ranges prior to insert, race conditions under extremely high concurrent load are not guarded by database-level exclusion locks in the MVP.
 
 ## YouTube URL
 
+https://www.youtube.com/watch?v=JdDjkQRrT7M
 ## Session transcripts
 
 Filled when the Guide builds the report: the agent writes chat markdown into `docs/transcripts/`; `python manage.py report` packages them.
@@ -180,7 +152,7 @@ Index: [docs/transcripts/INDEX.md](transcripts/INDEX.md)
 
 Filled by Guide from the student-judge run when this report was built.
 
-**Student / session:** Dillon Ganpat (816000000)
+**Student / session:** Dillon Ganpat (816044402)
 **Artifact:** Guide chats and completed project workspace (`docs/report.md`, `docs/wireframes/`, `docs/diagrams/`)
 **Phases in evidence:** 1–6 (COMP 3613; Phase 5 polish, Phase 6 deploy)
 
