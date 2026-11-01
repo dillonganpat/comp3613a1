@@ -1,6 +1,6 @@
 from datetime import date
 
-from fastapi import Form, Request, status
+from fastapi import Form, HTTPException, Request, status
 from fastapi.responses import HTMLResponse, RedirectResponse
 
 from app.dependencies import SessionDep
@@ -28,7 +28,7 @@ async def booking_create_action(
     property_repo = PropertyRepository(db)
     property = property_repo.get_by_id(property_id)
     if property is None:
-        raise status.HTTP_404_NOT_FOUND
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Property not found")
 
     today = date.today()
     if check_in < today:

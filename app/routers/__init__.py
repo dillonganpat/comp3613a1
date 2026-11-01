@@ -15,4 +15,4 @@ static_files = StaticFiles(directory="app/static")
 router = APIRouter(tags=["Jinja Based Endpoints"], include_in_schema=get_settings().env.lower() in ["dev", "development"])
 api_router = APIRouter(tags=["API Endpoints"], prefix="/api")
 
-from . import (admin_home, bookings, index, login, properties, register, server_config, user_home, users, logout)
+from . import (admin_home, api, bookings, index, login, properties, register, server_config, user_home, users, logout)

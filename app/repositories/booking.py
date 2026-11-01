@@ -28,6 +28,10 @@ class BookingRepository:
         )
         return self.db.exec(statement).first() is not None
 
+    def has_bookings(self, property_id: int) -> bool:
+        statement = select(Booking.id).where(Booking.property_id == property_id)
+        return self.db.exec(statement).first() is not None
+
     def list_by_tenant(self, tenant_id: int) -> list[Booking]:
         statement = select(Booking).where(Booking.tenant_id == tenant_id).order_by(Booking.check_in.desc())
         return self.db.exec(statement).all()

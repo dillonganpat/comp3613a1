@@ -5,6 +5,10 @@ from app.models.booking import BookingBase, Booking
 from app.repositories.booking import BookingRepository
 
 
+class BookingConflictError(ValueError):
+    """Raised when the requested dates overlap an existing booking."""
+
+
 class BookingService:
     def __init__(self, booking_repo: BookingRepository):
         self.booking_repo = booking_repo
@@ -16,7 +20,7 @@ class BookingService:
         if check_out <= check_in:
             raise ValueError("Check-out must be after check-in.")
         if self.booking_repo.has_overlap(property_id, check_in, check_out):
-            raise ValueError("This property is already booked for part of that date range.")
+            raise BookingConflictError("This property is already booked for part of that date range.")
 
         booking_data = BookingBase(
             property_id=property_id,

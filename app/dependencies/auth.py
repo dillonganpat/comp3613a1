@@ -13,7 +13,13 @@ async def get_current_user(request:Request, db:SessionDep)->User:
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
+    # Browser sessions use the access_token cookie; API clients (Postman, tests)
+    # send "Authorization: Bearer <token>". Either one is accepted.
     token = request.cookies.get("access_token")
+    if token is None:
+        auth_header = request.headers.get("Authorization", "")
+        if auth_header.lower().startswith("bearer "):
+            token = auth_header[7:].strip() or None
 
     if token is None:
         raise credentials_exception
@@ -53,3 +59,15 @@ async def is_admin_dep(user: AuthDep):
     return user
 
 AdminDep = Annotated[User, Depends(is_admin_dep)]
+
+
+async def require_admin_api(user: AuthDep):
+    """API version of AdminDep: 401 if not signed in (handled by AuthDep), 403 if not a landlord."""
+    if not await is_admin(user):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Landlord (admin) access required",
+        )
+    return user
+
+ApiAdminDep = Annotated[User, Depends(require_admin_api)]

@@ -6,6 +6,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 
 from app.dependencies import SessionDep
 from app.dependencies.auth import AdminDep, AuthDep
+from app.repositories.booking import BookingRepository
 from app.repositories.property import PropertyRepository
 from app.services.property_service import PropertyService
 from app.utilities.flash import flash
@@ -63,6 +64,12 @@ async def property_delete_action(
     db: SessionDep,
     property_id: int,
 ):
+    if BookingRepository(db).has_bookings(property_id):
+        flash(request, "This property has bookings and cannot be deleted.", "danger")
+        return RedirectResponse(
+            url=request.url_for("admin_home_view"),
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
     property_service = PropertyService(PropertyRepository(db))
     success = property_service.delete_property(property_id, user.id)
     if not success:
