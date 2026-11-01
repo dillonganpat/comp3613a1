@@ -330,3 +330,13 @@ comp3613a1
 3. Add a migration tool such as Alembic
 4. Consider Docker for deployment
 5. Prefer secure cookie practices over casual localStorage token storage where appropriate
+
+## Testing (Assignment 2)
+
+Run from the project root with the virtual environment active:
+
+    pytest tests/unit -v
+    pytest tests/integration -v
+
+API tests: start the app (python manage.py init, then python manage.py run), import
+postman/CampusStay_API.postman_collection.json into Postman and run the collection.
