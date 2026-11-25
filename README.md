@@ -32,8 +32,8 @@ Sign in with `POST /api/auth`, then send `Authorization: Bearer <token>`.
 |---|---|---|
 | POST | `/api/signup` | Public, creates a tenant |
 | POST | `/api/auth` | Public, returns a JWT |
-| GET | `/api/properties` | Signed in, filter by location and price |
-| GET | `/api/properties/{id}` | Signed in |
+| GET | `/api/properties` | Public, filter by location and price |
+| GET | `/api/properties/{id}` | Public |
 | POST | `/api/properties` | Landlord |
 | DELETE | `/api/properties/{id}` | Owning landlord |
 | POST | `/api/bookings` | Tenant |
